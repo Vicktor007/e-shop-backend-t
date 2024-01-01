@@ -21,7 +21,7 @@ const addProduct = asyncHandler(async (req, res) => {
         return res.json({ error: "Quantity is required" });
     }
 
-    const product = new Product({ ...req.fields });
+    const product = new Product({ user: req.user.id, ...req.fields });
     await product.save();
     res.json(product);
   } catch (error) {
@@ -120,7 +120,7 @@ const fetchProductById = asyncHandler(async (req, res) => {
 
 const fetchAllProducts = asyncHandler(async (req, res) => {
   try {
-    const products = await Product.find({})
+    const products = await Product.find({user: req.user._id}).sort("-createdAt")
       .populate("category",
       "name"
       )
